@@ -158,13 +158,16 @@
 
         var speciesData = {"Aruba": 72, "Bangladesh": 188, "Belgium": 3, "Cura\u00e7ao": 60, "Czechia": 3, "Denmark": 115, "Estonia": 56, "Finland": 35, "Germany": 18, "Greece": 22, "Italy": 62, "Latvia": 13, "Netherlands": 117, "Norway": 205, "Poland": 4, "Sweden": 61, "Thailand": 127, "United Kingdom": 44};
 
-        // Continuous color gradient from 0 to 500
+        // Updated color gradient: white for 0, yellow to red for 1-250
         function getColor(d) {
-            // Normalize value between 0 and 1
-            var normalized = Math.min(d / 500, 1);
-            // Create RGB color (red to yellow gradient)
-            var r = Math.floor(255 * normalized);
-            var g = Math.floor(255 * (1 - normalized * 0.5));
+            if (d === 0) return '#FFFFFF';  // White for no species
+            
+            // Normalize value between 0 and 1 (for 1-250 range)
+            var normalized = Math.min(d / 250, 1);
+            
+            // Create RGB color (yellow to red gradient)
+            var r = 255;
+            var g = Math.floor(255 * (1 - normalized));
             var b = 0;
             return `rgb(${r}, ${g}, ${b})`;
         }
@@ -191,22 +194,21 @@
         // Add legend
         var legend = L.control({position: 'bottomright'});
         legend.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend'),
-                labels = [],
-                from, to;
+            var div = L.DomUtil.create('div', 'info legend');
             
             div.innerHTML = '<h4>Species Count</h4>';
             
             // Create gradient scale
             var gradient = document.createElement('div');
             gradient.style.height = '20px';
-            gradient.style.background = 'linear-gradient(to right, rgb(0,255,0), rgb(255,255,0), rgb(255,0,0))';
+            gradient.style.background = 'linear-gradient(to right, #FFFFFF, #FFFF00, #FF0000)';
             gradient.style.marginBottom = '10px';
+            gradient.style.border = '1px solid #ccc';
             div.appendChild(gradient);
             
             // Add scale labels
             div.innerHTML += '<div style="display: flex; justify-content: space-between;">' +
-                             '<span>0</span><span>250</span><span>500+</span></div>';
+                             '<span>0</span><span>125</span><span>250+</span></div>';
             
             return div;
         };
